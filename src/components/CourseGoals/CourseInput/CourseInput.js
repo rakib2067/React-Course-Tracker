@@ -1,25 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import Button from '../../UI/Button/Button';
-import './CourseInput.css';
+import Button from "../../UI/Button/Button";
+import "./CourseInput.css";
 
-const CourseInput = props => {
-  const [enteredValue, setEnteredValue] = useState('');
-
-  const goalInputChangeHandler = event => {
+const CourseInput = (props) => {
+  const [enteredValue, setEnteredValue] = useState("");
+  const [invalid, setInvalid] = useState(false);
+  const goalInputChangeHandler = (event) => {
+    if (enteredValue.trim().length > 0) {
+      setInvalid(false);
+    }
     setEnteredValue(event.target.value);
   };
 
-  const formSubmitHandler = event => {
+  const formSubmitHandler = (event) => {
+    if (enteredValue.trim().length === 0) {
+      event.preventDefault();
+      setInvalid(true);
+      return;
+    }
+    setInvalid(false);
     event.preventDefault();
     props.onAddGoal(enteredValue);
+    setEnteredValue("");
   };
 
   return (
     <form onSubmit={formSubmitHandler}>
-      <div className="form-control">
+      <div className={`form-control ${invalid ? "invalid" : ""}`}>
         <label>Course Goal</label>
-        <input type="text" onChange={goalInputChangeHandler} />
+        <input
+          type="text"
+          value={enteredValue}
+          onChange={goalInputChangeHandler}
+        />
       </div>
       <Button type="submit">Add Goal</Button>
     </form>
